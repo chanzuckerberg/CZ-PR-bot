@@ -6,8 +6,6 @@ type Args = {
 }
 
 
-
-
 async function run()
 {
     try
