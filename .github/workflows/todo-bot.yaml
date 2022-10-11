@@ -10,7 +10,6 @@ jobs:
   todo_check:
     name: PR Checkboxes
     runs-on: ubuntu-latest
-    if: ${{ github.event.issue.pull_request }}
     steps:
     - uses: chanzuckerberg/CZ-PR-bot
       with:
