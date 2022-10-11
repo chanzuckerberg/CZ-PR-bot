@@ -1,0 +1,15 @@
+name: TODO Bot
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  check:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: chanzuckerberg/CZ-PR-bot 
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
