@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: chanzuckerberg/CZ-PR-bot
+    - uses: chanzuckerberg/CZ-PR-bot@0.0.1
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
