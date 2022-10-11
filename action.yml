@@ -1,9 +1,9 @@
-name: 'Actions TODO Bot'
+name: 'CZ PR TODO Bot'
 description: 'GitHub Actions to update status check based on Pull Request TODO checklist.'
 branding:
   icon: 'check-square'
   color: 'green'
-author: 'adriangodong'
+author: 'ehoops-cz'
 inputs: 
   repo-token:
     description: 'Token for the repo. Can be passed in using {{ secrets.GITHUB_TOKEN }}'
