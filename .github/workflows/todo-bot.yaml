@@ -3,13 +3,14 @@ name: TODO Bot
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
+  issue_comment:
+    types: [created, edited, deleted]
 
 jobs:
-  check:
-
+  todo_check:
+    name: PR Checkboxes
     runs-on: ubuntu-latest
-
     steps:
-    - uses: chanzuckerberg/CZ-PR-bot 
+    - uses: chanzuckerberg/CZ-PR-bot@v0.0.2
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
