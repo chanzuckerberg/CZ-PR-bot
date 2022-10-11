@@ -1,10 +1,38 @@
-# open-source-starter
-starter template for CZI open source projects
+# GitHub Actions TODO Bot
 
-## Code of Conduct
+This action parses PR description and set commit status to success if there are no unfilled checkbox.
 
-This project adheres to the Contributor Covenant [code of conduct](https://github.com/chanzuckerberg/.github/blob/master/CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [opensource@chanzuckerberg.com](mailto:opensource@chanzuckerberg.com).
+## Using the Action
 
-## Reporting Security Issues
+Create a new workflow YAML file under `.github/workflows/` folder.
 
-If you believe you have found a security issue, please responsibly disclose by contacting us at [security@chanzuckerberg.com](mailto:security@chanzuckerberg.com).
+Example:
+
+```
+name: TODO Bot
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  check:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: adriangodong/actions-todo-bot@1.0.0
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+## Development / Release
+
+* The default target branch for code changes is `master`
+* To prepare a test version:
+  * Fork the target commit into a release branch
+  * Modify .gitignore file to not exclude `node_modules` folder
+  * Run `npm ci --only=prod` and `npm run build`
+  * Commit all the changes
+* To release a version:
+  * Tag the target commit from the release branch

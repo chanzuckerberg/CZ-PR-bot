@@ -1,0 +1,13 @@
+name: 'Actions TODO Bot'
+description: 'GitHub Actions to update status check based on Pull Request TODO checklist.'
+branding:
+  icon: 'check-square'
+  color: 'green'
+author: 'adriangodong'
+inputs: 
+  repo-token:
+    description: 'Token for the repo. Can be passed in using {{ secrets.GITHUB_TOKEN }}'
+    required: true
+runs:
+  using: 'node12'
+  main: 'lib/main.js'
