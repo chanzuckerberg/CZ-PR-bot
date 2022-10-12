@@ -26,6 +26,7 @@ async function run() {
     const pull_request = context.payload.pull_request;
 
     if (!pull_request) {
+      console.log({context})
       throw new Error("Payload is missing pull_request.");
     }
 
