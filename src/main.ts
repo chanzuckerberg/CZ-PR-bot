@@ -32,7 +32,7 @@ async function run() {
     // TODO: repetitive with oktokit above
     const inputs: Inputs = {
       octokit,
-      token: core.getInput("token"),
+      token: core.getInput("repo-token"),
       repository: core.getInput("repository"),
       issueNumber: Number(core.getInput("issue-number")),
       commentAuthor: core.getInput("comment-author"),
@@ -87,7 +87,7 @@ async function getIncompleteCountFromComments(inputs: Inputs): Promise<number> {
   )) {
     // TODO: this is the same as the code for pull request body
     comments.forEach((comment) => {
-      const commentLines = comment.match(/[^\r\n]+/g);
+      const commentLines = comment.body.match(/[^\r\n]+/g);
       if (commentLines === null) {
         return;
       }
