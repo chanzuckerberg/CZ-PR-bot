@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "Node 12 template action",
-  "main": "lib/main.ts",
+  "main": "lib/src/main.ts",
   "scripts": {
     "build": "tsc",
     "test": "jest"

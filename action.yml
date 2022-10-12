@@ -10,4 +10,4 @@ inputs:
     required: true
 runs:
   using: 'node12'
-  main: 'lib/main.ts'
+  main: 'lib/src/main.ts'
