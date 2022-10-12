@@ -25,6 +25,7 @@ async function run() {
     const context = github.context;
     const pull_request = context.payload.pull_request;
 
+    console.log({context})
     if (!pull_request) {
       console.log({context})
       throw new Error("Payload is missing pull_request.");
