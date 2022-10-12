@@ -16,6 +16,9 @@ interface Inputs {
 }
 
 async function run() {
+  console.log("----")
+  console.log("running")
+  console.log("----")
   try {
     const args = getAndValidateArgs();
     const octokit = github.getOctokit(args.repoToken);
