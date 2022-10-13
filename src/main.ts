@@ -33,9 +33,6 @@ async function run() {
       0
     );
 
-    
-    console.log({reviewThreads})
-    console.log(reviewThreads.nodes[0].comments)
     const incompleteReviewTasks = reviewThreads.nodes.reduce((reviewCount, currentThread) => {
       return reviewCount + currentThread.comments.nodes.reduce((threadCount, currentComment) => {
         console.log({currentComment})
@@ -71,7 +68,6 @@ function getIncompleteCount(contentBody: string) {
   if (contentBodyLines === null) {
     return 0;
   }
-  console.log({contentBodyLines})
 
   let incompleteCount = 0;
   for (const line of contentBodyLines) {
