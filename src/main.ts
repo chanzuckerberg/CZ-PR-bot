@@ -1,5 +1,6 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
+import { isPullRequest, pullRequestDetails } from "./PullRequests";
 
 type Args = {
   repoToken: string;
@@ -26,14 +27,6 @@ async function run() {
     const pull_request = context.payload.pull_request;
     const comment = context.payload.comment;
 
-    console.log({context})
-    if (!pull_request && !comment) {
-      throw new Error("Payload is missing pull_request and missing comment.");
-    }
-    if (comment) {
-      console.log({comment})
-    }
-
     // TODO: repetitive with oktokit above
     const inputs: Inputs = {
       octokit,
@@ -44,6 +37,28 @@ async function run() {
       bodyIncludes: core.getInput("body-includes"),
       direction: core.getInput("direction"),
     };
+
+    console.log({context})
+    if (!pull_request && !comment) {
+      throw new Error("Payload is missing pull_request and missing comment.");
+    }
+    if (comment) {
+      console.log({comment})
+      if (!isPullRequest(inputs.token)) {
+        throw Error("Comment is not on a pull request");
+      }
+      const {
+        base_ref,
+        base_sha,
+        head_ref,
+        head_sha,
+      } = await pullRequestDetails(inputs.token);
+
+      console.log({base_ref, base_sha, head_ref, head_sha})
+
+    }
+
+
 
 
 
