@@ -7,35 +7,21 @@ type Args = {
 };
 
 interface Inputs {
-  octokit: any; // TODO: type me!!
   token: string;
   repository: string;
-  issueNumber: number;
-  commentAuthor: string;
-  bodyIncludes: string;
-  direction: string;
 }
 
 async function run() {
-  console.log("----");
-  console.log("running");
-  console.log("----");
   try {
-    const args = getAndValidateArgs();
-    const octokit = github.getOctokit(args.repoToken);
-    const context = github.context;
-    const pull_request = context.payload.pull_request;
-
-    // TODO: repetitive with oktokit above
     const inputs: Inputs = {
-      octokit,
       token: core.getInput("repo-token"),
       repository: core.getInput("repository"),
-      issueNumber: context.issue.number,
-      commentAuthor: core.getInput("comment-author"),
-      bodyIncludes: core.getInput("body-includes"),
-      direction: core.getInput("direction"),
     };
+    
+    const octokit = github.getOctokit(inputs.token);
+
+    const context = github.context;
+    const issueNumber = context.issue.number;
 
     if (!isPullRequest(inputs.token)) {
       throw Error("This is not a pull request or pull request comment");
@@ -46,9 +32,7 @@ async function run() {
 
     console.log({ base_ref, base_sha, head_ref, head_sha });
 
-    const incompleteCommentTasks = await getIncompleteCountFromComments(inputs);
-    // TODO: This is wrong - comments won't have a pull_request field, but we still
-    // need to get the body to find the open todos.
+    const incompleteCommentTasks = await getIncompleteCountFromComments(octokit, inputs, issueNumber);
     const incompletePullRequestBodyItems = getIncompleteCount(body)
 
     const nIncompleteItems =
@@ -72,14 +56,7 @@ async function run() {
   }
 }
 
-function getAndValidateArgs(): Args {
-  return {
-    repoToken: core.getInput("repo-token", { required: true }),
-  };
-}
-
-async function getIncompleteCountFromComments(inputs: Inputs): Promise<number> {
-  const { octokit } = inputs;
+async function getIncompleteCountFromComments(octokit: any, inputs: Inputs, issueNumber: number): Promise<number> {
   let incompleteCount = 0;
 
   const [owner, repo] = inputs.repository.split("/");
@@ -87,7 +64,7 @@ async function getIncompleteCountFromComments(inputs: Inputs): Promise<number> {
   const parameters = {
     owner: owner,
     repo: repo,
-    issue_number: inputs.issueNumber,
+    issue_number: issueNumber,
   };
 
   for await (const { data: comments } of octokit.paginate.iterator(
