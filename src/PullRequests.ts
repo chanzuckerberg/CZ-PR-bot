@@ -3,6 +3,16 @@ import { context, getOctokit } from "@actions/github";
 interface CommentNode {
   body: string;
 }
+
+interface ThreadNode {
+  comments: {
+    nodes: CommentNode[]
+  }
+}
+
+interface PullRequestReviewThreads {
+  nodes: ThreadNode[]
+}
 interface PullRequestDetailsResponse {
   repository: {
     pullRequest: {
@@ -16,6 +26,7 @@ interface PullRequestDetailsResponse {
       comments: {
         nodes: CommentNode[];
       };
+      reviewThreads: PullRequestReviewThreads;
     };
   };
 }
@@ -38,7 +49,7 @@ export async function pullRequestDetails(token: string) {
 
   const {
     repository: {
-      pullRequest: { headRef, body, comments },
+      pullRequest: { headRef, body, comments, reviewThreads },
     },
   } = await client.graphql<PullRequestDetailsResponse>(
     `
@@ -57,6 +68,15 @@ export async function pullRequestDetails(token: string) {
                 body
               }
             }
+            reviewThreads(first: 100) {
+              nodes {
+                comments(first: 100) {
+                  nodes {
+                    body
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -71,5 +91,6 @@ export async function pullRequestDetails(token: string) {
     head_sha: headRef.target.oid,
     body,
     comments,
+    reviewThreads,
   };
 }

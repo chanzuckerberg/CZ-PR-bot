@@ -21,7 +21,9 @@ async function run() {
     if (!isPullRequest(inputs.token)) {
       throw Error("This is not a pull request or pull request comment");
     }
-    const { head_sha, body, comments } = await pullRequestDetails(inputs.token);
+    const { head_sha, body, comments, reviewThreads } = await pullRequestDetails(inputs.token);
+
+    console.log({reviewThreads})
 
 
     const incompletePullRequestTasks = getIncompleteCount(body);
@@ -31,8 +33,15 @@ async function run() {
       0
     );
 
+    const incompleteReviewTasks = reviewThreads.nodes.reduce((reviewCount, currentThread) => {
+      return reviewCount + currentThread.comments.nodes.reduce((threadCount, currentComment) => {
+        console.log({currentComment})
+        return threadCount + getIncompleteCount(currentComment.body);
+      }, 0)
+    }, 0)
+
     const nIncompleteTasks =
-      incompletePullRequestTasks + incompleteCommentTasks;
+      incompletePullRequestTasks + incompleteCommentTasks + incompleteReviewTasks;
 
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
