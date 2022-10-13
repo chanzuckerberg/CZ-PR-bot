@@ -38,28 +38,17 @@ async function run() {
       direction: core.getInput("direction"),
     };
 
-    console.log({context})
-    if (!pull_request && !comment) {
-      throw new Error("Payload is missing pull_request and missing comment.");
+    if (!isPullRequest(inputs.token)) {
+      throw Error("This is not a pull request or pull request comment");
     }
-    if (comment) {
-      console.log({comment})
-      if (!isPullRequest(inputs.token)) {
-        throw Error("Comment is not on a pull request");
-      }
-      const {
-        base_ref,
-        base_sha,
-        head_ref,
-        head_sha,
-      } = await pullRequestDetails(inputs.token);
+    const {
+      base_ref,
+      base_sha,
+      head_ref,
+      head_sha,
+    } = await pullRequestDetails(inputs.token);
 
-      console.log({base_ref, base_sha, head_ref, head_sha})
-
-    }
-
-
-
+    console.log({base_ref, base_sha, head_ref, head_sha})
 
 
     const incompleteCommentTasks = await getIncompleteCountFromComments(inputs);
@@ -70,24 +59,17 @@ async function run() {
     const nIncompleteItems =
       incompletePullRequestBodyItems + incompleteCommentTasks
 
-    if (pull_request) {
-      console.log("pr head", pull_request.head.sha)
-    }
-
-
-
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
       repo: context.issue.repo,
-      sha: pull_request?.head.sha || "not-a-sha",
-      // state: nIncompleteItems === 0 ? "success" : "error",
-      state: "error",
+      sha: head_sha,
+      state: nIncompleteItems === 0 ? "success" : "error",
       target_url: "https://github.com/chanzuckerberg/CZ-PR-bot/actions",
       description:
         nIncompleteItems === 0
           ? "Ready to merge"
           : `Found ${nIncompleteItems} unfinished task(s)`,
-      context: "TODO Bot",
+      context: "CZ PR Bot - todos",
     });
   } catch (error) {
     core.setFailed((error as any).message);
