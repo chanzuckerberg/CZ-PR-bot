@@ -9,12 +9,6 @@ interface PullRequestDetailsResponse {
           oid: string;
         };
       };
-      baseRef: {
-        name: string;
-        target: {
-          oid: string;
-        };
-      };
       body: string;
     };
   };
@@ -46,12 +40,6 @@ export async function pullRequestDetails(token: string) {
       query pullRequestDetails($repo:String!, $owner:String!, $number:Int!) {
         repository(name: $repo, owner: $owner) {
           pullRequest(number: $number) {
-            baseRef {
-              name
-              target {
-                oid
-              }
-            }
             headRef {
               name
               target {

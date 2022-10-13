@@ -2,10 +2,6 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { isPullRequest, pullRequestDetails } from "./PullRequests";
 
-type Args = {
-  repoToken: string;
-};
-
 interface Inputs {
   token: string;
   repository: string;
@@ -17,7 +13,7 @@ async function run() {
       token: core.getInput("repo-token"),
       repository: core.getInput("repository"),
     };
-    
+
     const octokit = github.getOctokit(inputs.token);
 
     const context = github.context;
@@ -26,27 +22,28 @@ async function run() {
     if (!isPullRequest(inputs.token)) {
       throw Error("This is not a pull request or pull request comment");
     }
-    const { head_sha, body } = await pullRequestDetails(
-      inputs.token
+    const { head_sha, body } = await pullRequestDetails(inputs.token);
+
+    const incompletePullRequestTasks = getIncompleteCount(body);
+    const incompleteCommentTasks = await getIncompleteCountFromComments(
+      octokit,
+      inputs.repository,
+      issueNumber
     );
 
-    const incompleteCommentTasks = await getIncompleteCountFromComments(octokit, inputs, issueNumber);
-    const incompletePullRequestBodyItems = getIncompleteCount(body)
-
-    const nIncompleteItems =
-      incompletePullRequestBodyItems + incompleteCommentTasks;
-    console.log({nIncompleteItems})
+    const nIncompleteTasks =
+      incompletePullRequestTasks + incompleteCommentTasks;
 
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
       repo: context.issue.repo,
       sha: head_sha,
-      state: nIncompleteItems === 0 ? "success" : "error",
+      state: nIncompleteTasks === 0 ? "success" : "error",
       target_url: "https://github.com/chanzuckerberg/CZ-PR-bot/actions",
       description:
-        nIncompleteItems === 0
+        nIncompleteTasks === 0
           ? "Ready to merge"
-          : `Found ${nIncompleteItems} unfinished task(s)`,
+          : `Found ${nIncompleteTasks} unfinished task(s)`,
       context: "CZ PR Bot - todos",
     });
   } catch (error) {
@@ -54,10 +51,33 @@ async function run() {
   }
 }
 
-async function getIncompleteCountFromComments(octokit: any, inputs: Inputs, issueNumber: number): Promise<number> {
+function getIncompleteCount(contentBody: string) {
+  if (!contentBody) {
+    return 0;
+  }
+  const contentBodyLines = contentBody.match(/[^\r\n]+/g);
+  if (contentBodyLines === null) {
+    return 0;
+  }
+
+  let incompleteCount = 0;
+  for (const line of contentBodyLines) {
+    const trimmedLine = line.trim()
+    if (trimmedLine.startsWith("- [ ]") || trimmedLine.startsWith("[]")) {
+      incompleteCount++;
+    }
+  }
+  return incompleteCount;
+}
+
+async function getIncompleteCountFromComments(
+  octokit: any,
+  repository: string,
+  issueNumber: number
+): Promise<number> {
   let incompleteCount = 0;
 
-  const [owner, repo] = inputs.repository.split("/");
+  const [owner, repo] = repository.split("/");
 
   const parameters = {
     owner: owner,
@@ -69,39 +89,13 @@ async function getIncompleteCountFromComments(octokit: any, inputs: Inputs, issu
     octokit.rest.issues.listComments,
     parameters
   )) {
-    console.log({ comments });
-    // TODO: this is the same as the code for pull request body
     comments.forEach((comment) => {
-      const commentLines = comment.body.match(/[^\r\n]+/g);
-      if (commentLines === null) {
-        return;
-      }
-      for (const line of commentLines) {
-        if (line.trim().startsWith("- [ ]")) {
-          incompleteCount++;
-        }
-      }
+      incompleteCount = incompleteCount + getIncompleteCount(comment.body);
     });
   }
   return incompleteCount;
 }
 
-function getIncompleteCount(pullRequestBody: string) {
-  if (!pullRequestBody) {
-    return 0;
-  }
-  const pullRequestBodyLines = pullRequestBody.match(/[^\r\n]+/g);
-  if (pullRequestBodyLines === null) {
-    return 0;
-  }
 
-  let incompleteCount = 0;
-  for (const line of pullRequestBodyLines) {
-    if (line.trim().startsWith("- [ ]")) {
-      incompleteCount++;
-    }
-  }
-  return incompleteCount;
-}
 
 run();
