@@ -59,18 +59,25 @@ async function run() {
     const nIncompleteItems =
       incompletePullRequestBodyItems + incompleteCommentTasks;
 
-    console.log({nIncompleteItems})
+    const pr = await octokit.rest.pulls.get({
+      owner: context.issue.owner,
+      repo: context.issue.repo,
+      pull_number: inputs.issueNumber,
+    });
+
+    console.log({pr})
+
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
       repo: context.issue.repo,
       sha: inputs.pullRequestSha,
       state: nIncompleteItems === 0 ? "success" : "error",
-      target_url: "https://github.com/adriangodong/actions-todo-bot",
+      target_url: "https://github.com/chanzuckerberg/CZ-PR-bot/actions",
       description:
         nIncompleteItems === 0
           ? "Ready to merge"
           : `Found ${nIncompleteItems} unfinished task(s)`,
-      context: "Actions TODO",
+      context: "CZ PR Bot",
     });
   } catch (error) {
     core.setFailed((error as any).message);
