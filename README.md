@@ -1,6 +1,6 @@
 # GitHub Actions TODO Bot
 
-This action parses PR description and set commit status to success if there are no unfilled checkbox.
+This action parses the PR description and comments.  It sets commit status to success if there are no unfilled checkboxes.
 
 ## Using the Action
 
@@ -9,30 +9,32 @@ Create a new workflow YAML file under `.github/workflows/` folder.
 Example:
 
 ```
-name: TODO Bot
+name: CZ PR TODO bot
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
+  issue_comment:
+    types: [created, edited, deleted]
 
 jobs:
-  check:
-
+  todo_check:
+    name: PR Checkboxes
     runs-on: ubuntu-latest
-
     steps:
-    - uses: adriangodong/actions-todo-bot@1.0.0
+    - uses: chanzuckerberg/CZ-PR-bot@main
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Development / Release
 
-* The default target branch for code changes is `master`
+* The default target branch for code changes is `main`
 * To prepare a test version:
-  * Fork the target commit into a release branch
-  * Modify .gitignore file to not exclude `node_modules` folder
-  * Run `npm ci --only=prod` and `npm run build`
+  * Clone the repo and make changes
+    * During development you will likely want to point the workflow to your branch using `uses: chanzuckerberg/CZ-PR-bot@your-branch-name` rather than `chanzuckerberg/CZ-PR-bot@main`
+  * Ensure .gitignore file does not exclude `node_modules` folder
+  * Run `npm run build` to transpile ts to js
   * Commit all the changes
 * To release a version:
-  * Tag the target commit from the release branch
+  * Tag the target commit from the main branch

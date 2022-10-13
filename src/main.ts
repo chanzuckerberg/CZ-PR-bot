@@ -59,6 +59,7 @@ function getIncompleteCount(contentBody: string) {
   if (contentBodyLines === null) {
     return 0;
   }
+  console.log({contentBodyLines})
 
   let incompleteCount = 0;
   for (const line of contentBodyLines) {
