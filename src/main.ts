@@ -51,24 +51,29 @@ async function run() {
     console.log({base_ref, base_sha, head_ref, head_sha})
 
 
-    const incompleteCommentTasks = await getIncompleteCountFromComments(inputs);
-    const incompletePullRequestBodyItems = pull_request
-      ? getIncompleteCount(pull_request.body || "")
-      : 0;
+    // const incompleteCommentTasks = await getIncompleteCountFromComments(inputs);
+    // const incompletePullRequestBodyItems = pull_request
+    //   ? getIncompleteCount(pull_request.body || "")
+    //   : 0;
 
-    const nIncompleteItems =
-      incompletePullRequestBodyItems + incompleteCommentTasks
+    // const nIncompleteItems =
+    //   incompletePullRequestBodyItems + incompleteCommentTasks
+
+    const nIncompleteItems = 2;
 
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
       repo: context.issue.repo,
       sha: head_sha,
-      state: nIncompleteItems === 0 ? "success" : "error",
+      // state: nIncompleteItems === 0 ? "success" : "error",
+      state: "error",
+
       target_url: "https://github.com/chanzuckerberg/CZ-PR-bot/actions",
-      description:
-        nIncompleteItems === 0
-          ? "Ready to merge"
-          : `Found ${nIncompleteItems} unfinished task(s)`,
+      // description:
+      //   nIncompleteItems === 0
+      //     ? "Ready to merge"
+      //     : `Found ${nIncompleteItems} unfinished task(s)`,
+          description:`test description`,
       context: "CZ PR Bot - todos",
     });
   } catch (error) {
