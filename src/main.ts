@@ -27,14 +27,8 @@ async function run() {
     const pull_request = context.payload.pull_request;
     const comment = context.payload.comment;
 
-    console.log({ context });
-    console.log({ context });
     if (!pull_request && !comment) {
       throw new Error("Payload is missing pull_request and missing comment.");
-    }
-
-    if (pull_request) {
-      console.log("pull_request", pull_request)
     }
 
     // TODO: repetitive with oktokit above
@@ -49,7 +43,11 @@ async function run() {
       direction: core.getInput("direction"),
     };
 
-    console.log({ inputs });
+    if (pull_request) {
+      console.log("pull_request", pull_request)
+      console.log("pr head", pull_request.head.sha)
+      console.log("merge sha", inputs.pullRequestSha)
+    }
 
     const incompleteCommentTasks = await getIncompleteCountFromComments(inputs);
     const incompletePullRequestBodyItems = pull_request
@@ -65,19 +63,18 @@ async function run() {
       pull_number: inputs.issueNumber,
     });
 
-    console.log({pr})
-
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
       repo: context.issue.repo,
-      sha: pr.data.merge_commit_sha || '',
-      state: nIncompleteItems === 0 ? "success" : "error",
+      sha: inputs.pullRequestSha,
+      // state: nIncompleteItems === 0 ? "success" : "error",
+      state: "error",
       target_url: "https://github.com/chanzuckerberg/CZ-PR-bot/actions",
       description:
         nIncompleteItems === 0
           ? "Ready to merge"
           : `Found ${nIncompleteItems} unfinished task(s)`,
-      context: "CZ PR Bot",
+      context: "TODO Bot",
     });
   } catch (error) {
     core.setFailed((error as any).message);
@@ -107,7 +104,6 @@ async function getIncompleteCountFromComments(inputs: Inputs): Promise<number> {
     parameters
   )) {
     // TODO: this is the same as the code for pull request body
-    console.log({ comments });
     comments.forEach((comment) => {
       const commentLines = comment.body.match(/[^\r\n]+/g);
       if (commentLines === null) {
