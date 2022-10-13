@@ -34,16 +34,16 @@ async function run() {
     );
 
     console.log({reviewThreads})
+    console.log(reviewThreads.nodes[0].comments)
     const incompleteReviewTasks = reviewThreads.nodes.reduce((reviewCount, currentThread) => {
-      return reviewCount + currentThread.comments.reduce((threadCount, currentComment) => {
+      return reviewCount + currentThread.comments.nodes.reduce((threadCount, currentComment) => {
         console.log({currentComment})
-        return 1
-        // return threadCount + getIncompleteCount(currentComment);
+        return threadCount + getIncompleteCount(currentComment.body);
       }, 0)
     }, 0)
 
     const nIncompleteTasks =
-      incompletePullRequestTasks + incompleteCommentTasks;
+      incompletePullRequestTasks + incompleteCommentTasks + incompleteReviewTasks;
 
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,

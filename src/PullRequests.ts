@@ -5,7 +5,9 @@ interface CommentNode {
 }
 
 interface ThreadNode {
-  comments: CommentNode[]
+  comments: {
+    nodes: CommentNode[]
+  }
 }
 
 interface PullRequestReviewThreads {
