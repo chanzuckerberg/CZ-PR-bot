@@ -51,7 +51,7 @@ export async function pullRequestDetails(token: string) {
               }
             }
             body
-            comments (first: 300) {
+            comments (first: 100) {
               nodes {
                 body
               }
