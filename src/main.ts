@@ -16,9 +16,9 @@ interface Inputs {
 }
 
 async function run() {
-  console.log("----")
-  console.log("running")
-  console.log("----")
+  console.log("----");
+  console.log("running");
+  console.log("----");
   try {
     const args = getAndValidateArgs();
     const octokit = github.getOctokit(args.repoToken);
@@ -26,9 +26,9 @@ async function run() {
     const pull_request = context.payload.pull_request;
     const comment = context.payload.comment;
 
-    console.log({context})
+    console.log({ context });
+    console.log({ context });
     if (!pull_request && !comment) {
-      console.log({context})
       throw new Error("Payload is missing pull_request and missing comment.");
     }
 
@@ -46,10 +46,12 @@ async function run() {
     console.log({ inputs });
 
     const incompleteCommentTasks = await getIncompleteCountFromComments(inputs);
-    const incompletePullRequestBodyItems = pull_request ?
-      getIncompleteCount(pull_request.body || "") : 0;
-      
-    const nIncompleteItems = incompletePullRequestBodyItems  + incompleteCommentTasks;
+    const incompletePullRequestBodyItems = pull_request
+      ? getIncompleteCount(pull_request.body || "")
+      : 0;
+
+    const nIncompleteItems =
+      incompletePullRequestBodyItems + incompleteCommentTasks;
 
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
@@ -58,7 +60,7 @@ async function run() {
       state: nIncompleteItems === 0 ? "success" : "error",
       target_url: "https://github.com/adriangodong/actions-todo-bot",
       description:
-      nIncompleteItems === 0
+        nIncompleteItems === 0
           ? "Ready to merge"
           : `Found ${nIncompleteItems} unfinished task(s)`,
       context: "Actions TODO",
@@ -91,6 +93,7 @@ async function getIncompleteCountFromComments(inputs: Inputs): Promise<number> {
     parameters
   )) {
     // TODO: this is the same as the code for pull request body
+    console.log({ comments });
     comments.forEach((comment) => {
       const commentLines = comment.body.match(/[^\r\n]+/g);
       if (commentLines === null) {
@@ -112,6 +115,7 @@ function getIncompleteCount(pullRequestBody: string) {
   if (!pullRequestBody) {
     return 0;
   }
+  console.log({pullRequestBody})
   const pullRequestBodyLines = pullRequestBody.match(/[^\r\n]+/g);
   if (pullRequestBodyLines === null) {
     return 0;
