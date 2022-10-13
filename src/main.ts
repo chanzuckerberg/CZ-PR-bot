@@ -32,6 +32,8 @@ async function run() {
         prevCount + getIncompleteCount(currentNode.body),
       0
     );
+
+    console.log({reviewThreads})
     const incompleteReviewTasks = reviewThreads.nodes.reduce((reviewCount, currentThread) => {
       return reviewCount + currentThread.comments.reduce((threadCount, currentComment) => {
         console.log({currentComment})
