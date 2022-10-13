@@ -10,6 +10,11 @@ interface PullRequestDetailsResponse {
         };
       };
       body: string;
+      comments: {
+        nodes: {
+          body: string;
+        };
+      };
     };
   };
 }
@@ -17,7 +22,9 @@ interface PullRequestDetailsResponse {
 export async function isPullRequest(token: string) {
   const client = getOctokit(token);
 
-  const { data: { pull_request } } = await client.rest.issues.get({
+  const {
+    data: { pull_request },
+  } = await client.rest.issues.get({
     ...context.repo,
     issue_number: context.issue.number,
   });
@@ -30,10 +37,7 @@ export async function pullRequestDetails(token: string) {
 
   const {
     repository: {
-      pullRequest: {
-        headRef,
-        body,
-      },
+      pullRequest: { headRef, body, comments },
     },
   } = await client.graphql<PullRequestDetailsResponse>(
     `
@@ -47,18 +51,24 @@ export async function pullRequestDetails(token: string) {
               }
             }
             body
+            comments (first: 300) {
+              nodes {
+                body
+              }
+            }
           }
         }
       }
     `,
     {
       ...context.repo,
-      number: context.issue.number
-    },
+      number: context.issue.number,
+    }
   );
 
   return {
     head_sha: headRef.target.oid,
     body,
+    comments,
   };
 }
