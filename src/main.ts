@@ -99,24 +99,27 @@ async function getIncompleteCountFromComments(inputs: Inputs): Promise<number> {
     issue_number: inputs.issueNumber,
   };
 
-  // for await (const { data: comments } of octokit.paginate.iterator(
-  //   octokit.rest.issues.listComments,
-  //   parameters
-  // )) {
-  //   // TODO: this is the same as the code for pull request body
-  //   comments.forEach((comment) => {
-  //     const commentLines = comment.body.match(/[^\r\n]+/g);
-  //     if (commentLines === null) {
-  //       return;
-  //     }
+  console.log({parameters})
 
-  //     for (const line of commentLines) {
-  //       if (line.trim().startsWith("- [ ]")) {
-  //         incompleteCount++;
-  //       }
-  //     }
-  //   });
-  // }
+  for await (const { data: comments } of octokit.paginate.iterator(
+    octokit.rest.issues.listComments,
+    parameters
+  )) {
+    console.log({comments})
+    // TODO: this is the same as the code for pull request body
+    comments.forEach((comment) => {
+      const commentLines = comment.body.match(/[^\r\n]+/g);
+      if (commentLines === null) {
+        return;
+      }
+
+      for (const line of commentLines) {
+        if (line.trim().startsWith("- [ ]")) {
+          incompleteCount++;
+        }
+      }
+    });
+  }
   return incompleteCount;
 }
 
