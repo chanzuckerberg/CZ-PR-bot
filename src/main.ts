@@ -51,7 +51,7 @@ async function run() {
     console.log({base_ref, base_sha, head_ref, head_sha})
 
 
-    // const incompleteCommentTasks = await getIncompleteCountFromComments(inputs);
+    const incompleteCommentTasks = await getIncompleteCountFromComments(inputs);
     // const incompletePullRequestBodyItems = pull_request
     //   ? getIncompleteCount(pull_request.body || "")
     //   : 0;
