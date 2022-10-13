@@ -33,6 +33,7 @@ async function run() {
       0
     );
 
+    
     console.log({reviewThreads})
     console.log(reviewThreads.nodes[0].comments)
     const incompleteReviewTasks = reviewThreads.nodes.reduce((reviewCount, currentThread) => {
