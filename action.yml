@@ -13,7 +13,7 @@ inputs:
     default: ${{ github.repository }}
   issue-number:
     description: "The number of the issue or pull request in which to search."
-    default: ${{ github.event.number }}
+    default: ${{ github.context.issue.number }}
 runs:
   using: "node16"
   main: "lib/main.js"
