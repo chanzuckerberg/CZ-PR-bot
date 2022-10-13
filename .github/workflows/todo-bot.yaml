@@ -1,4 +1,4 @@
-name: TODO Bot
+name: CZ PR TODO Bot
 
 on:
   pull_request:

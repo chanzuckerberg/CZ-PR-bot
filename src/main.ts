@@ -17,14 +17,12 @@ async function run() {
     const octokit = github.getOctokit(inputs.token);
 
     const context = github.context;
-    const issueNumber = context.issue.number;
 
     if (!isPullRequest(inputs.token)) {
       throw Error("This is not a pull request or pull request comment");
     }
     const { head_sha, body, comments } = await pullRequestDetails(inputs.token);
 
-    console.log({ comments });
 
     const incompletePullRequestTasks = getIncompleteCount(body);
     const incompleteCommentTasks = comments.nodes.reduce(
@@ -68,32 +66,6 @@ function getIncompleteCount(contentBody: string) {
     if (trimmedLine.startsWith("- [ ]") || trimmedLine.startsWith("[]")) {
       incompleteCount++;
     }
-  }
-  return incompleteCount;
-}
-
-async function getIncompleteCountFromComments(
-  octokit: any,
-  repository: string,
-  issueNumber: number
-): Promise<number> {
-  let incompleteCount = 0;
-
-  const [owner, repo] = repository.split("/");
-
-  const parameters = {
-    owner: owner,
-    repo: repo,
-    issue_number: issueNumber,
-  };
-
-  for await (const { data: comments } of octokit.paginate.iterator(
-    octokit.rest.issues.listComments,
-    parameters
-  )) {
-    comments.forEach((comment) => {
-      incompleteCount = incompleteCount + getIncompleteCount(comment.body);
-    });
   }
   return incompleteCount;
 }
