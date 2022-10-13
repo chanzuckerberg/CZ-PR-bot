@@ -32,7 +32,7 @@ async function run() {
       octokit,
       token: core.getInput("repo-token"),
       repository: core.getInput("repository"),
-      issueNumber: Number(core.getInput("issue-number")),
+      issueNumber: context.issue.number,
       commentAuthor: core.getInput("comment-author"),
       bodyIncludes: core.getInput("body-includes"),
       direction: core.getInput("direction"),
