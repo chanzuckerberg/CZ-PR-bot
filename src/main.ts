@@ -10,6 +10,7 @@ interface Inputs {
   token: string;
   repository: string;
   issueNumber: number;
+  pullRequestSha: string;
   commentAuthor: string;
   bodyIncludes: string;
   direction: string;
@@ -42,6 +43,7 @@ async function run() {
       token: core.getInput("repo-token"),
       repository: core.getInput("repository"),
       issueNumber: Number(core.getInput("issue-number")),
+      pullRequestSha: core.getInput("pull-request-sha"),
       commentAuthor: core.getInput("comment-author"),
       bodyIncludes: core.getInput("body-includes"),
       direction: core.getInput("direction"),
@@ -61,7 +63,7 @@ async function run() {
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
       repo: context.issue.repo,
-      sha: context.sha,
+      sha: inputs.pullRequestSha,
       state: nIncompleteItems === 0 ? "success" : "error",
       target_url: "https://github.com/adriangodong/actions-todo-bot",
       description:

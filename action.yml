@@ -1,19 +1,22 @@
-name: 'CZ PR TODO Bot'
-description: 'GitHub Actions to update status check based on Pull Request TODO checklist.'
+name: "CZ PR TODO Bot"
+description: "GitHub Actions to update status check based on Pull Request TODO checklist."
 branding:
-  icon: 'check-square'
-  color: 'green'
-author: 'ehoops-cz'
-inputs: 
+  icon: "check-square"
+  color: "green"
+author: "ehoops-cz"
+inputs:
   repo-token:
-    description: 'Token for the repo. Can be passed in using {{ secrets.GITHUB_TOKEN }}'
+    description: "Token for the repo. Can be passed in using {{ secrets.GITHUB_TOKEN }}"
     default: ${{ github.token }}
   repository:
-    description: 'The full name of the repository containing the issue or pull request.'
+    description: "The full name of the repository containing the issue or pull request."
     default: ${{ github.repository }}
   issue-number:
-    description: 'The number of the issue or pull request in which to search.'
+    description: "The number of the issue or pull request in which to search."
     default: ${{ github.event.number }}
+  pull_request_sha:
+    description: "SHA of the merge commit automatically created by github. https://stackoverflow.com/questions/68061051/get-commit-sha-in-github-actions"
+    default: ${{ github.sha }}
 runs:
-  using: 'node16'
-  main: 'lib/main.js'
+  using: "node16"
+  main: "lib/main.js"
