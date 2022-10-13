@@ -21,7 +21,9 @@ async function run() {
     if (!isPullRequest(inputs.token)) {
       throw Error("This is not a pull request or pull request comment");
     }
-    const { head_sha, body, comments } = await pullRequestDetails(inputs.token);
+    const { head_sha, body, comments, pullRequestTimelineItems } = await pullRequestDetails(inputs.token);
+
+    console.log({pullRequestTimelineItems})
 
 
     const incompletePullRequestTasks = getIncompleteCount(body);
