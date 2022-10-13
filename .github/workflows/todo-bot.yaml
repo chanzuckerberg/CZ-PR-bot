@@ -1,4 +1,4 @@
-name: TODO Bot
+name: CZ PR TODO Bot
 
 on:
   pull_request:
@@ -11,6 +11,6 @@ jobs:
     name: PR Checkboxes
     runs-on: ubuntu-latest
     steps:
-    - uses: chanzuckerberg/CZ-PR-bot@fetch-pr-comments
+    - uses: chanzuckerberg/CZ-PR-bot@main
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
