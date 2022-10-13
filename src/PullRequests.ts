@@ -4,8 +4,12 @@ interface CommentNode {
   body: string;
 }
 
-interface PullRequestTimelineItems {
-  nodes: any[];
+interface ThreadNode {
+  comments: CommentNode[]
+}
+
+interface PullRequestReviewThreads {
+  nodes: ThreadNode[]
 }
 interface PullRequestDetailsResponse {
   repository: {
@@ -20,7 +24,7 @@ interface PullRequestDetailsResponse {
       comments: {
         nodes: CommentNode[];
       };
-      pullRequestTimelineItems: PullRequestTimelineItems;
+      reviewThreads: PullRequestReviewThreads;
     };
   };
 }
@@ -43,7 +47,7 @@ export async function pullRequestDetails(token: string) {
 
   const {
     repository: {
-      pullRequest: { headRef, body, comments, pullRequestTimelineItems },
+      pullRequest: { headRef, body, comments, reviewThreads },
     },
   } = await client.graphql<PullRequestDetailsResponse>(
     `
@@ -62,7 +66,14 @@ export async function pullRequestDetails(token: string) {
                 body
               }
             }
-            pullRequestTimelineItems
+            reviewThreads(first: 100) {
+              nodes {
+                comments(first: 100) {
+                  nodes {
+                    body
+                  }
+                }
+              }
           }
         }
       }
@@ -77,6 +88,6 @@ export async function pullRequestDetails(token: string) {
     head_sha: headRef.target.oid,
     body,
     comments,
-    pullRequestTimelineItems,
+    reviewThreads,
   };
 }

@@ -21,9 +21,9 @@ async function run() {
     if (!isPullRequest(inputs.token)) {
       throw Error("This is not a pull request or pull request comment");
     }
-    const { head_sha, body, comments, pullRequestTimelineItems } = await pullRequestDetails(inputs.token);
+    const { head_sha, body, comments, reviewThreads } = await pullRequestDetails(inputs.token);
 
-    console.log({pullRequestTimelineItems})
+    console.log({reviewThreads})
 
 
     const incompletePullRequestTasks = getIncompleteCount(body);
@@ -32,6 +32,13 @@ async function run() {
         prevCount + getIncompleteCount(currentNode.body),
       0
     );
+    const incompleteReviewTasks = reviewThreads.nodes.reduce((reviewCount, currentThread) => {
+      return reviewCount + currentThread.comments.reduce((threadCount, currentComment) => {
+        console.log({currentComment})
+        return 1
+        // return threadCount + getIncompleteCount(currentComment);
+      }, 0)
+    }, 0)
 
     const nIncompleteTasks =
       incompletePullRequestTasks + incompleteCommentTasks;
