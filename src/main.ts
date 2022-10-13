@@ -66,6 +66,10 @@ async function run() {
       console.log("pr sha", pr.data.merge_commit_sha)
     }
 
+    if (comment) {
+      console.log({comment})
+    }
+
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
       repo: context.issue.repo,
@@ -127,7 +131,6 @@ function getIncompleteCount(pullRequestBody: string) {
   if (!pullRequestBody) {
     return 0;
   }
-  console.log({pullRequestBody})
   const pullRequestBodyLines = pullRequestBody.match(/[^\r\n]+/g);
   if (pullRequestBodyLines === null) {
     return 0;
