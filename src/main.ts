@@ -30,6 +30,9 @@ async function run() {
     if (!pull_request && !comment) {
       throw new Error("Payload is missing pull_request and missing comment.");
     }
+    if (comment) {
+      console.log({comment})
+    }
 
     // TODO: repetitive with oktokit above
     const inputs: Inputs = {
@@ -56,9 +59,7 @@ async function run() {
       console.log("pr head", pull_request.head.sha)
     }
 
-    if (comment) {
-      console.log({comment})
-    }
+
 
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
