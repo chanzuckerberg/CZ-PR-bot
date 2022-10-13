@@ -107,7 +107,7 @@ async function getIncompleteCountFromComments(inputs: Inputs): Promise<number> {
       }
     });
   }
-
+  console.log({incompleteCount})
   return incompleteCount;
 }
 
