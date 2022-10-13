@@ -70,7 +70,7 @@ async function run() {
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
       repo: context.issue.repo,
-      sha: inputs.pullRequestSha,
+      sha: pr.data.merge_commit_sha || '',
       state: nIncompleteItems === 0 ? "success" : "error",
       target_url: "https://github.com/chanzuckerberg/CZ-PR-bot/actions",
       description:
