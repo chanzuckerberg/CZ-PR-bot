@@ -10,7 +10,6 @@ interface Inputs {
   token: string;
   repository: string;
   issueNumber: number;
-  pullRequestSha: string;
   commentAuthor: string;
   bodyIncludes: string;
   direction: string;
@@ -37,7 +36,6 @@ async function run() {
       token: core.getInput("repo-token"),
       repository: core.getInput("repository"),
       issueNumber: Number(core.getInput("issue-number")),
-      pullRequestSha: core.getInput("pull-request-sha"),
       commentAuthor: core.getInput("comment-author"),
       bodyIncludes: core.getInput("body-includes"),
       direction: core.getInput("direction"),
@@ -60,9 +58,8 @@ async function run() {
     });
 
     if (pull_request) {
-      console.log("pull_request", pull_request)
+      console.log({pr})
       console.log("pr head", pull_request.head.sha)
-      console.log("merge sha", inputs.pullRequestSha)
       console.log("pr sha", pr.data.merge_commit_sha)
     }
 

@@ -14,9 +14,6 @@ inputs:
   issue-number:
     description: "The number of the issue or pull request in which to search."
     default: ${{ github.event.number }}
-  pull_request_sha:
-    description: "SHA of the merge commit automatically created by github. https://stackoverflow.com/questions/68061051/get-commit-sha-in-github-actions"
-    default: ${{ github.sha }}
 runs:
   using: "node16"
   main: "lib/main.js"
