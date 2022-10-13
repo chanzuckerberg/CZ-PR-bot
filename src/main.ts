@@ -44,7 +44,7 @@ async function run() {
         nIncompleteTasks === 0
           ? "Ready to merge"
           : `Found ${nIncompleteTasks} unfinished task(s)`,
-      context: "CZ PR Bot - todos",
+      context: "CZ PR TODO Bot",
     });
   } catch (error) {
     core.setFailed((error as any).message);
