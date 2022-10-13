@@ -26,7 +26,7 @@ async function run() {
     const pull_request = context.payload.pull_request;
     const comment = context.payload.comment;
 
-    console.log(context.payload)
+    console.log({context})
     if (!pull_request && !comment) {
       throw new Error("Payload is missing pull_request and missing comment.");
     }
@@ -50,17 +50,10 @@ async function run() {
       : 0;
 
     const nIncompleteItems =
-      incompletePullRequestBodyItems + incompleteCommentTasks;
-
-    const pr = await octokit.rest.pulls.get({
-      owner: context.issue.owner,
-      repo: context.issue.repo,
-      pull_number: inputs.issueNumber,
-    });
+      incompletePullRequestBodyItems + incompleteCommentTasks
 
     if (pull_request) {
       console.log("pr head", pull_request.head.sha)
-      console.log("pr sha", pr.data.merge_commit_sha)
     }
 
     if (comment) {
@@ -70,7 +63,7 @@ async function run() {
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
       repo: context.issue.repo,
-      sha: pr.data.merge_commit_sha || pull_request?.head.sha || "not-a-sha",
+      sha: pull_request?.head.sha || "not-a-sha",
       // state: nIncompleteItems === 0 ? "success" : "error",
       state: "error",
       target_url: "https://github.com/chanzuckerberg/CZ-PR-bot/actions",
