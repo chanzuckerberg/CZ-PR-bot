@@ -32,6 +32,10 @@ async function run() {
       throw new Error("Payload is missing pull_request and missing comment.");
     }
 
+    if (pull_request) {
+      console.log("pull_request", pull_request)
+    }
+
     // TODO: repetitive with oktokit above
     const inputs: Inputs = {
       octokit,
@@ -53,6 +57,7 @@ async function run() {
     const nIncompleteItems =
       incompletePullRequestBodyItems + incompleteCommentTasks;
 
+    console.log({nIncompleteItems})
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
       repo: context.issue.repo,
@@ -107,7 +112,6 @@ async function getIncompleteCountFromComments(inputs: Inputs): Promise<number> {
       }
     });
   }
-  console.log({incompleteCount})
   return incompleteCount;
 }
 
