@@ -15,6 +15,7 @@ interface PullRequestDetailsResponse {
           oid: string;
         };
       };
+      body: string;
     };
   };
 }
@@ -38,6 +39,7 @@ export async function pullRequestDetails(token: string) {
       pullRequest: {
         baseRef,
         headRef,
+        body,
       },
     },
   } = await client.graphql<PullRequestDetailsResponse>(
@@ -57,6 +59,7 @@ export async function pullRequestDetails(token: string) {
                 oid
               }
             }
+            body
           }
         }
       }
@@ -72,5 +75,6 @@ export async function pullRequestDetails(token: string) {
     base_sha: baseRef.target.oid,
     head_ref: headRef.name,
     head_sha: headRef.target.oid,
+    body,
   };
 }

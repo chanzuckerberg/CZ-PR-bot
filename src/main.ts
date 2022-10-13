@@ -40,7 +40,7 @@ async function run() {
     if (!isPullRequest(inputs.token)) {
       throw Error("This is not a pull request or pull request comment");
     }
-    const { base_ref, base_sha, head_ref, head_sha } = await pullRequestDetails(
+    const { base_ref, base_sha, head_ref, head_sha, body } = await pullRequestDetails(
       inputs.token
     );
 
@@ -49,9 +49,7 @@ async function run() {
     const incompleteCommentTasks = await getIncompleteCountFromComments(inputs);
     // TODO: This is wrong - comments won't have a pull_request field, but we still
     // need to get the body to find the open todos.
-    const incompletePullRequestBodyItems = pull_request
-      ? getIncompleteCount(pull_request.body || "")
-      : 0;
+    const incompletePullRequestBodyItems = getIncompleteCount(body)
 
     const nIncompleteItems =
       incompletePullRequestBodyItems + incompleteCommentTasks;
