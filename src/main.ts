@@ -43,11 +43,7 @@ async function run() {
       direction: core.getInput("direction"),
     };
 
-    if (pull_request) {
-      console.log("pull_request", pull_request)
-      console.log("pr head", pull_request.head.sha)
-      console.log("merge sha", inputs.pullRequestSha)
-    }
+
 
     const incompleteCommentTasks = await getIncompleteCountFromComments(inputs);
     const incompletePullRequestBodyItems = pull_request
@@ -63,10 +59,17 @@ async function run() {
       pull_number: inputs.issueNumber,
     });
 
+    if (pull_request) {
+      console.log("pull_request", pull_request)
+      console.log("pr head", pull_request.head.sha)
+      console.log("merge sha", inputs.pullRequestSha)
+      console.log("pr sha", pr.data.merge_commit_sha)
+    }
+
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
       repo: context.issue.repo,
-      sha: inputs.pullRequestSha,
+      sha: pr.data.merge_commit_sha || pull_request?.head.sha,
       // state: nIncompleteItems === 0 ? "success" : "error",
       state: "error",
       target_url: "https://github.com/chanzuckerberg/CZ-PR-bot/actions",
