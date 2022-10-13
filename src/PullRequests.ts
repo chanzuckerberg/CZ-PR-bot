@@ -1,5 +1,8 @@
 import { context, getOctokit } from "@actions/github";
 
+interface CommentNode {
+  body: string;
+}
 interface PullRequestDetailsResponse {
   repository: {
     pullRequest: {
@@ -11,9 +14,7 @@ interface PullRequestDetailsResponse {
       };
       body: string;
       comments: {
-        nodes: {
-          body: string;
-        };
+        nodes: CommentNode[];
       };
     };
   };

@@ -24,13 +24,13 @@ async function run() {
     }
     const { head_sha, body, comments } = await pullRequestDetails(inputs.token);
 
-    console.log({comments})
+    console.log({ comments });
 
     const incompletePullRequestTasks = getIncompleteCount(body);
-    const incompleteCommentTasks = await getIncompleteCountFromComments(
-      octokit,
-      inputs.repository,
-      issueNumber
+    const incompleteCommentTasks = comments.nodes.reduce(
+      (prevCount, currentNode) =>
+        prevCount + getIncompleteCount(currentNode.body),
+      0
     );
 
     const nIncompleteTasks =
@@ -64,7 +64,7 @@ function getIncompleteCount(contentBody: string) {
 
   let incompleteCount = 0;
   for (const line of contentBodyLines) {
-    const trimmedLine = line.trim()
+    const trimmedLine = line.trim();
     if (trimmedLine.startsWith("- [ ]") || trimmedLine.startsWith("[]")) {
       incompleteCount++;
     }
@@ -97,7 +97,5 @@ async function getIncompleteCountFromComments(
   }
   return incompleteCount;
 }
-
-
 
 run();
