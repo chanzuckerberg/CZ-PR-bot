@@ -55,6 +55,7 @@ async function run() {
 
     const nIncompleteItems =
       incompletePullRequestBodyItems + incompleteCommentTasks;
+    console.log({nIncompleteItems})
 
     await octokit.rest.repos.createCommitStatus({
       owner: context.issue.owner,
