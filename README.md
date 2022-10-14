@@ -9,12 +9,14 @@ Create a new workflow YAML file under `.github/workflows/` folder.
 Example:
 
 ```
-name: CZ PR TODO bot
+name: CZ PR TODO Bot
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
   issue_comment:
+    types: [created, edited, deleted]
+  pull_request_review_comment:
     types: [created, edited, deleted]
 
 jobs:
