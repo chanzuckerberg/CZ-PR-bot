@@ -2,7 +2,7 @@
 
 This action parses the PR description and comments.  It sets commit status to success if there are no unfilled checkboxes.
 
-## Using the Action
+## Getting Started - Using the Action
 
 Create a new workflow YAML file under `.github/workflows/` folder.
 
