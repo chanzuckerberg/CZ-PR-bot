@@ -28,6 +28,7 @@ async function run() {
     // enable reviewers anyway. If pr author wants to leave themself some todos they can do it in 
     // a comment.
     // const incompletePullRequestTasks = getIncompleteCount(body);
+    console.log("Not checking PR Body");
     const incompletePullRequestTasks = 0;
 
     // Comments on the PR
@@ -36,6 +37,7 @@ async function run() {
         prevCount + getIncompleteCount(currentNode.body),
       0
     );
+    console.log(incompleteCommentTasks, " incomplete comment tasks");
 
     // Review comments
     const incompleteReviewTasks = reviewThreads.nodes.reduce((reviewCount, currentThread) => {
@@ -43,6 +45,7 @@ async function run() {
         return threadCount + getIncompleteCount(currentComment.body);
       }, 0)
     }, 0)
+    console.log(incompleteReviewTasks, " incomplete review tasks");
 
     const nIncompleteTasks =
       incompletePullRequestTasks + incompleteCommentTasks + incompleteReviewTasks;
