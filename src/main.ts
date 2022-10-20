@@ -29,6 +29,7 @@ async function run() {
     // a comment.
     // const incompletePullRequestTasks = getIncompleteCount(body);
     console.log("Not checking PR Body");
+
     const incompletePullRequestTasks = 0;
 
     // Comments on the PR
