@@ -25,8 +25,11 @@ async function run() {
 
     console.log({reviewThreads})
 
-
-    const incompletePullRequestTasks = getIncompleteCount(body);
+    // Commenting out pr body incomplete tasks. It's getting annoying for the czgenepi PR templates
+    // because we have some tasks in our template that are "won't do". The point of the bot is to 
+    // enable reviewers anyway. If pr author wants to leave themself some todos they can do it in 
+    // a comment.
+    // const incompletePullRequestTasks = getIncompleteCount(body);
     const incompleteCommentTasks = comments.nodes.reduce(
       (prevCount, currentNode) =>
         prevCount + getIncompleteCount(currentNode.body),
